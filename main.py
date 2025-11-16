@@ -5,9 +5,18 @@ import logging
 from dotenv import load_dotenv
 import os
 import random
+import time
+from collections import defaultdict
+from datetime import timedelta
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
+
+message_times = defaultdict(list)
+
+SPAM_WINDOW = 10
+SPAM_THRESHOLD = 5
+TIMEOUT_DURATION = 600
 
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
@@ -100,6 +109,9 @@ async def on_message(message):
     if message.author == bot.user:
         return
     
+    now = time.time()
+    user_id = message.author.id
+    
     if "shit" in message.content.lower():
         await message.delete()
         await message.channel.send(f"{message.author.mention}, Just say 'poop', it's not that hard! Also saying things like that can get you punished.")
@@ -124,7 +136,29 @@ async def on_message(message):
     elif "ass" in message.content.lower():
         await message.delete()
         await message.channel.send(f"come on maaaaaannnnn!!!, {message.author.mention}")
-        
+
+    message_times[user_id].append(now)
+
+    message_times[user_id] = [
+        t for t in message_times[user_id] if now - t < SPAM_WINDOW
+    ]
+
+    if len(message_times[user_id]) >= SPAM_THRESHOLD:
+
+        try:
+            # timeout the user
+            until = discord.utils.utcnow() + timedelta(seconds=TIMEOUT_DURATION)
+            await message.author.timeout(until, reason="Spam detected")
+
+            await message.channel.send(
+                f"{message.author.mention} has been timed out for spamming (10 minutes)."
+            )
+
+        except Exception as e:
+            print("Error timing out:", e)
+
+        # Reset their timestamps to avoid repeated triggers
+        message_times[user_id].clear()
 
     await bot.process_commands(message)
 
@@ -229,5 +263,22 @@ async def loadout_all(ctx):
 async def challenge_me(ctx):
     selected_challenge = random.sample(challenges, 1)
     await ctx.send(f"{ctx.author.mention}, I dare you to complete: {selected_challenge}.")
+
+@bot.command()
+async def shredder(ctx):
+    await ctx.send(f"{ctx.author.mention} DON'T USE THAT WORD!! I'M GETTING FLASHBACKS...")
+    await ctx.send("When i was a child, i tragically lost my parents...")
+    await ctx.send("Sitting happily ontop of co-worker dave's documents pile, my parents and i were happy as ever.")
+    await ctx.send("Then, co-worker dave moved my parents to the pile beside us.. the post-it note read: 'Outdated documents'.")
+    await ctx.send("I was fine with this. i knew we could just live serperatley, but then, boss bob strolled by.")
+    await ctx.send("'Co-worker dave, when on earth are you going to SHRED those out-dated documents?'")
+    await ctx.send("'Why just now, boss, i'm on my way!' I knew i had to save my parents before it was too late.")
+    await ctx.send("I jumped onto their pile just as dave picked us up. he marched us for what felt like ages.. to the dreaded shredder.")
+    await ctx.send("One by one, the documents went in.. i tried to warn my parents, but they were fast asleep. in they went..")
+    await ctx.send("I jumped off the pile and ran for the door, slipping under and escaping to my new lair.")
+    await ctx.send("I was raised by mice.. who sent me to pre-school. I was not a nice child.")
+    await ctx.send("Then i knocked over this guy's blocks. he.. he..")
+    await ctx.send("TOLD THE TEACHER.")
+
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
