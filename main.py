@@ -8,6 +8,7 @@ import random
 import time
 from collections import defaultdict
 from datetime import timedelta
+import webserver
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
@@ -16,7 +17,7 @@ message_times = defaultdict(list)
 
 SPAM_WINDOW = 10
 SPAM_THRESHOLD = 5
-TIMEOUT_DURATION = 600
+TIMEOUT_DURATION = 60
 
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
@@ -280,5 +281,5 @@ async def shredder(ctx):
     await ctx.send("Then i knocked over this guy's blocks. he.. he..")
     await ctx.send("TOLD THE TEACHER.")
 
-
+webserver.keep_alive()
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
