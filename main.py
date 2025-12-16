@@ -267,19 +267,8 @@ async def challenge_me(ctx):
 
 @bot.command()
 async def shredder(ctx):
-    await ctx.send(f"{ctx.author.mention} DON'T USE THAT WORD!! I'M GETTING FLASHBACKS...")
-    await ctx.send("When i was a child, i tragically lost my parents...")
-    await ctx.send("Sitting happily ontop of co-worker dave's documents pile, my parents and i were happy as ever.")
-    await ctx.send("Then, co-worker dave moved my parents to the pile beside us.. the post-it note read: 'Outdated documents'.")
-    await ctx.send("I was fine with this. i knew we could just live serperatley, but then, boss bob strolled by.")
-    await ctx.send("'Co-worker dave, when on earth are you going to SHRED those out-dated documents?'")
-    await ctx.send("'Why just now, boss, i'm on my way!' I knew i had to save my parents before it was too late.")
-    await ctx.send("I jumped onto their pile just as dave picked us up. he marched us for what felt like ages.. to the dreaded shredder.")
-    await ctx.send("One by one, the documents went in.. i tried to warn my parents, but they were fast asleep. in they went..")
-    await ctx.send("I jumped off the pile and ran for the door, slipping under and escaping to my new lair.")
-    await ctx.send("I was raised by mice.. who sent me to pre-school. I was not a nice child.")
-    await ctx.send("Then i knocked over this guy's blocks. he.. he..")
-    await ctx.send("TOLD THE TEACHER.")
+    await ctx.send(f"{ctx.author.mention} DON'T USE THAT WORD!!")
+
 
 webserver.keep_alive()
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
